@@ -15,6 +15,12 @@ from pathlib import Path
 
 from .generator import generate_resources, to_bundle, to_ndjson
 
+# CI pipes use the platform locale (cp1252 on Windows runners) — our output
+# contains ✔/→, so force UTF-8 before anything prints.
+for _stream in (sys.stdout, sys.stderr):
+    if _stream is not None and hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
